@@ -236,6 +236,14 @@ function finishQuiz(){
 
     html += `</ul>   
         <p><strong>${studentName}</strong>, homework is finished, and the result is saved.</p>
+
+        <div style="margin-top: 20px;">
+            <button onclick="window.location.href='index.html'" 
+                    style="background:#2196F3; padding:12px 25px; font-size:18px; color:white; border:none; border-radius:5px; cursor:pointer;">
+                Back to Home
+            </button>
+        </div>
+        
     </div>`;
     document.body.innerHTML = html;
 
