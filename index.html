@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Homework Portal</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 320px;
+    }
+    h1 { color: #333; font-size: 24px; margin-bottom: 20px; }
+    .lesson-card {
+        display: block;
+        text-decoration: none;
+        background: #4CAF50;
+        color: white;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: transform 0.2s, background 0.2s;
+    }
+    .lesson-card:hover {
+        background: #45a049;
+        transform: scale(1.02);
+    }
+    .lesson-card span {
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+        margin-top: 5px;
+        opacity: 0.9;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Math Homework</h1>
+    <p>Please select your lesson:</p>
+    
+    <!-- 这里的 href 必须和你保存的文件名完全一致 -->
+    <a href="section1_5.html" class="lesson-card">
+        Lesson 1.5
+        <span>Adding 2-Digit Numbers</span>
+    </a>
+
+    <a href="section1_6.html" class="lesson-card">
+        Lesson 1.6
+        <span>Subtracting 2-Digit Numbers</span>
+    </a>
+
+    <a href="section1_7.html" class="lesson-card" >
+        Lesson 1.8
+        <span>Adding Three Numbers</span>
+    </a>
+</div>
+
+</body>
+</html>
