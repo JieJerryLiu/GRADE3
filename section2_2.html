@@ -78,7 +78,7 @@
 <div class="box" id="container">
     <div id="startPage">
         <h2>Section 2.2</h2>
-        <p>Three-Digit Addition</p>
+        <p>Subtract a Two-Digit Number from a Three-Digit Number</p>
         <input type="text" id="studentName" placeholder="Enter your name" style="width: 180px; padding: 8px; font-size: 16px;">
         <br><br>
         <button onclick="startQuiz()">Start Quiz</button>
@@ -200,6 +200,21 @@ function loadQuestion(){
 
     document.getElementById('prevBtn').style.display = 'none';
     document.getElementById('nextBtn').innerText = 'Submit';
+
+    submitted = false;
+    let img = document.getElementById('resultImg');
+    img.style.display = 'none';
+
+    let prevBtn = document.getElementById('prevBtn');
+    prevBtn.style.display = 'none';
+    prevBtn.innerText = 'Previous';
+    prevBtn.onclick = prevQuestion; // 确保事件是“上一题”
+
+    let nextBtn = document.getElementById('nextBtn');
+    nextBtn.innerText = 'Submit';
+
+    document.getElementById("questionNum").innerText = `Question ${current+1} / ${questions.length}`;
+    document.getElementById('d2').focus();
 }
 
 function saveAnswer(){
@@ -211,8 +226,9 @@ function saveAnswer(){
     userAnswers[current] = combined === "" ? "" : parseInt(combined, 10).toString();
 }
 
-function submitOrNext(){
-    if(!submitted){
+function submitOrNext() {
+    if (!submitted) {
+        // 第一步：点击 Submit 后的逻辑
         saveAnswer();
 
         let user = userAnswers[current] || "";
@@ -227,15 +243,45 @@ function submitOrNext(){
         let prevBtn = document.getElementById('prevBtn');
         let nextBtn = document.getElementById('nextBtn');
 
-        prevBtn.style.display = 'block';
-        prevBtn.disabled = current === 0;
-
-        nextBtn.innerText = current === questions.length - 1 ? "Finish" : "Next";
-
+        // 修改按钮逻辑
+        if (isCorrect) {
+            // 如果答对了，左边不显示重试，右边变 Next
+            prevBtn.style.display = 'none';
+            nextBtn.innerText = current === questions.length - 1 ? "Finish" : "Next";
+        } else {
+            // 如果答错了，左边变 Try Again，右边变 Next
+            prevBtn.innerText = "Try Again";
+            prevBtn.style.display = 'block';
+            prevBtn.disabled = false;
+            // 重新定义 Try Again 的点击事件，使其回到答题状态
+            prevBtn.onclick = tryAgain; 
+            
+            nextBtn.innerText = current === questions.length - 1 ? "Finish" : "Next";
+        }
     } else {
+        // 第二步：已经在显示结果状态下，点击 Next/Finish 的逻辑
         nextQuestion();
     }
 }
+
+function tryAgain() {
+    submitted = false; // 重置提交状态
+    
+    // 隐藏结果图
+    let img = document.getElementById('resultImg');
+    img.style.display = 'none';
+    img.src = "";
+
+    // 按钮恢复初始状态
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('prevBtn').onclick = prevQuestion; // 还原回原来的事件
+    
+    let nextBtn = document.getElementById('nextBtn');
+    nextBtn.innerText = 'Submit';
+
+    // 聚焦到输入框，方便重新输入
+    document.getElementById('d2').focus();
+}    
 
 function nextQuestion(){
     saveAnswer();
