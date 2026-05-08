@@ -4,73 +4,17 @@
 <meta charset="UTF-8">
 <title>Math Practice – Subtract a Two-Digit Number from a Three-Digit Number</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f5f5f5;
-        text-align: center;
-        padding-top: 50px;
-    }
-    .box {
-        background: white;
-        width: 300px;
-        margin: auto;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(5, 40px); 
-        justify-content: center;
-        align-items: center;
-        gap: 5px;
-        font-size: 28px;
-        font-family: 'Courier New', monospace;
-    }
-    .line {
-        grid-column: span 5;
-        border-top: 3px solid black;
-        margin: 5px 0;
-    }
-    .inputs input {
-        width: 35px;
-        height: 35px;
-        font-size: 22px;
-        text-align: center;
-    }
-
-    #btnRow {
-        display: flex;
-        margin-top: 20px;
-        gap: 10px;
-    }
-    button {
-        flex: 1;
-        padding: 10px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        background: #4CAF50;
-        color: white;
-        cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; padding-top: 50px; }
+    .box { background: white; width: 300px; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .grid { display: grid; grid-template-columns: repeat(5, 40px); justify-content: center; align-items: center; gap: 5px; font-size: 28px; font-family: 'Courier New', monospace; }
+    .line { grid-column: span 5; border-top: 3px solid black; margin: 5px 0; }
+    .inputs input { width: 35px; height: 35px; font-size: 22px; text-align: center; }
+    #btnRow { display: flex; margin-top: 20px; gap: 10px; }
+    button { flex: 1; padding: 10px; font-size: 16px; border: none; border-radius: 5px; background: #4CAF50; color: white; cursor: pointer; }
     button:hover { background: #45a049; }
-    button:disabled {
-        background: #aaa;
-        cursor: not-allowed;
-    }
-    #questionNum {
-        color: blue;
-        margin-bottom: 20px;
-        font-weight: bold;
-        font-size: 20px;
-    }
-    #resultImg {
-        display: none;
-        width: 160px;
-        margin: 15px auto 0 auto;
-    }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+    #questionNum { color: blue; margin-bottom: 20px; font-weight: bold; font-size: 20px; }
+    #resultImg { display: none; width: 160px; margin: 15px auto 0 auto; }
 </style>
 </head>
 <body>
@@ -78,18 +22,16 @@
 <div class="box" id="container">
     <div id="startPage">
         <h2>Section 2.4</h2>
-        <p>Three-Digit Addition</p>
+        <p>Subtract a Two-Digit Number from a Three-Digit Number</p>
         <input type="text" id="studentName" placeholder="Enter your name" style="width: 180px; padding: 8px; font-size: 16px;">
         <br><br>
         <button onclick="startQuiz()">Start Quiz</button>
     </div>
 
     <div id="quizPage" style="display:none;">
-        <div id="questionNum">Question 1 / 5</div>
+        <div id="questionNum">Question 1 / 25</div>
         <div class="grid" id="grid"></div>
-
         <img id="resultImg" src="" alt="result">
-
         <div id="btnRow">
             <button id="prevBtn" onclick="prevQuestion()">Previous</button>
             <button id="nextBtn" onclick="submitOrNext()">Submit</button>
@@ -124,6 +66,7 @@ let questions = [
 {"nums":[153,67],"type":"-","answer":"86"},
 {"nums":[130,43],"type":"-","answer":"87"},
 {"nums":[107,39],"type":"-","answer":"68"}
+
 ];
 
 let current = 0;
@@ -136,65 +79,41 @@ const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTL
 
 function startQuiz(){
     studentName = document.getElementById('studentName').value.trim();
-    if(!studentName){
-        alert("Please enter your name.");
-        return;
-    }
+    if(!studentName) { alert("Please enter your name."); return; }
     document.getElementById('startPage').style.display = 'none';
     document.getElementById('quizPage').style.display = 'block';
     loadQuestion();
 }
 
 function loadQuestion(){
+    submitted = false;
     let q = questions[current];
     let gridHtml = "";
 
     q.nums.forEach((num, index) => {
-        let s = num.toString();
-        let padded = s.padStart(4, ' '); 
-        let digits = padded.split('');
-
+        let s = num.toString().padStart(4, ' '); 
+        let digits = s.split('');
         let symbol = (index === q.nums.length - 1) ? q.type : ""; 
-
-        gridHtml += `<div>${symbol}</div>`;
-        gridHtml += `<div>${digits[0] === ' ' ? '' : digits[0]}</div>`;
-        gridHtml += `<div>${digits[1]}</div>`;
-        gridHtml += `<div>${digits[2]}</div>`;
-        gridHtml += `<div>${digits[3]}</div>`;
+        gridHtml += `<div>${symbol}</div><div>${digits[0].trim()}</div><div>${digits[1].trim()}</div><div>${digits[2].trim()}</div><div>${digits[3].trim()}</div>`;
     });
 
-    gridHtml += `<div class="line"></div>`;
-
-    gridHtml += `<div></div>`;
-    gridHtml += `<div class="inputs"><input id="d0" maxlength="1"></div>`;
-    gridHtml += `<div class="inputs"><input id="d1" maxlength="1"></div>`;
-    gridHtml += `<div class="inputs"><input id="d2" maxlength="1"></div>`;
-    gridHtml += `<div class="inputs"><input id="d3" maxlength="1"></div>`;
+    gridHtml += `<div class="line"></div><div></div>`;
+    gridHtml += `<div class="inputs"><input id="d0" maxlength="1"></div><div class="inputs"><input id="d1" maxlength="1"></div><div class="inputs"><input id="d2" maxlength="1"></div><div class="inputs"><input id="d3" maxlength="1"></div>`;
 
     document.getElementById("grid").innerHTML = gridHtml;
-
-    let saved = userAnswers[current];
-    if(saved){
-        let sAns = saved.toString().padStart(3, ' ');
-        let digits = sAns.split('');
-
-        document.getElementById('d0').value = digits[0].trim();
-        document.getElementById('d1').value = digits[1].trim();
-        document.getElementById('d2').value = digits[2].trim();
-        document.getElementById('d3').value = digits[3].trim();
-    }
-
     document.getElementById("questionNum").innerText = `Question ${current+1} / ${questions.length}`;
-    document.getElementById('d2').focus();
+    
+    // 初始化按钮
+    document.getElementById('resultImg').style.display = 'none';
+    const pBtn = document.getElementById('prevBtn');
+    pBtn.style.display = 'none'; // 初始只显示 Submit
+    pBtn.innerText = "Previous";
+    pBtn.onclick = prevQuestion;
 
-    submitted = false;
-
-    let img = document.getElementById('resultImg');
-    img.style.display = 'none';
-    img.src = "";
-
-    document.getElementById('prevBtn').style.display = 'none';
-    document.getElementById('nextBtn').innerText = 'Submit';
+    const nBtn = document.getElementById('nextBtn');
+    nBtn.innerText = "Submit";
+    
+    document.getElementById('d3').focus();
 }
 
 function saveAnswer(){
@@ -206,96 +125,79 @@ function saveAnswer(){
     userAnswers[current] = combined === "" ? "" : parseInt(combined, 10).toString();
 }
 
-function submitOrNext(){
-    if(!submitted){
+function submitOrNext() {
+    if (!submitted) {
         saveAnswer();
-
-        let user = userAnswers[current] || "";
-        let isCorrect = user === questions[current].answer;
-
+        let isCorrect = userAnswers[current] === questions[current].answer;
         let img = document.getElementById('resultImg');
         img.src = isCorrect ? "correct.png" : "wrong.png";
         img.style.display = "block";
-
         submitted = true;
 
-        let prevBtn = document.getElementById('prevBtn');
-        let nextBtn = document.getElementById('nextBtn');
+        const pBtn = document.getElementById('prevBtn');
+        const nBtn = document.getElementById('nextBtn');
 
-        prevBtn.style.display = 'block';
-        prevBtn.disabled = current === 0;
-
-        nextBtn.innerText = current === questions.length - 1 ? "Finish" : "Next";
-
+        if (isCorrect) {
+            pBtn.style.display = 'none'; // 正确就不给 Try Again
+        } else {
+            pBtn.innerText = "Try Again";
+            pBtn.style.display = 'block';
+            pBtn.onclick = tryAgain; // 绑定重试功能
+        }
+        nBtn.innerText = (current === questions.length - 1) ? "Finish" : "Next";
     } else {
         nextQuestion();
     }
 }
 
+function tryAgain() {
+    submitted = false;
+    document.getElementById('resultImg').style.display = 'none';
+    // 清空当前格
+    document.getElementById('d0').value = "";
+    document.getElementById('d1').value = "";
+    document.getElementById('d2').value = "";
+    document.getElementById('d3').value = "";
+    
+    // 按钮回滚
+    const pBtn = document.getElementById('prevBtn');
+    pBtn.style.display = 'none';
+    pBtn.onclick = prevQuestion;
+    
+    document.getElementById('nextBtn').innerText = "Submit";
+    document.getElementById('d3').focus();
+}
+
 function nextQuestion(){
-    saveAnswer();
-    if(current === questions.length - 1){
-        finishQuiz();
-    } else {
-        current++;
-        loadQuestion();
-    }
+    if(current === questions.length - 1) finishQuiz();
+    else { current++; loadQuestion(); }
 }
 
 function prevQuestion(){
-    saveAnswer();
-    if(current > 0){
-        current--;
-        loadQuestion();
-    }
+    if(current > 0) { current--; loadQuestion(); }
 }
 
 function finishQuiz(){
     saveAnswer();
     let score = 0;
     let details = [];
-
     questions.forEach((q, i) => {
-        let user = userAnswers[i] || "";
-        let isCorrect = user === q.answer;
+        let isCorrect = userAnswers[i] === q.answer;
         if(isCorrect) score++;
-        else details.push(`Q${i+1}: User=${user||"blank"}, Correct=${q.answer}`);
+        else details.push(`Q${i+1}: User=${userAnswers[i]||"blank"}, Correct=${q.answer}`);
     });
 
-    let resultHtml = `
-        <div style="text-align:center;">
-            <h1>Quiz Finished!</h1>
-            <h2>Score: ${score} / ${questions.length}</h2>
-            <div style="text-align:left; display:inline-block; margin-bottom:20px;">
-    `;
-    
+    let resultHtml = `<div style="text-align:center;"><h1>Quiz Finished!</h1><h2>Score: ${score} / ${questions.length}</h2><div style="text-align:left; display:inline-block; margin-bottom:20px;">`;
     questions.forEach((q, i) => {
         let isCorrect = userAnswers[i] === q.answer;
         resultHtml += `<p>${isCorrect ? "✅" : "❌"} Question ${i+1} ${!isCorrect ? "(Correct: "+q.answer+")" : ""}</p>`;
     });
-
-    resultHtml += `
-            </div>
-            <br>
-            <button onclick="location.reload()" style="background:#2196F3; width:200px;">Restart Quiz</button>
-        </div>
-    `;
-    
+    resultHtml += `</div><br><button onclick="location.reload()" style="background:#2196F3; width:200px;">Restart Quiz</button></div>`;
     document.getElementById('container').innerHTML = resultHtml;
 
-    fetch(sheetURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-            Name: studentName,
-            Section: sectionName,
-            Score: `${score} / ${questions.length}`,
-            Details: details.join("; "),
-            Time: new Date().toLocaleString()
-        })
-    }).catch(err => console.error("Save Error:", err));
+    fetch(sheetURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ Name: studentName, Section: sectionName, Score: `${score} / ${questions.length}`, Details: details.join("; "), Time: new Date().toLocaleString() })});
 }
 </script>
 </body>
 </html>
+
