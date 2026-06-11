@@ -16,13 +16,11 @@ body {
     margin: auto;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 .grid {
     display: grid;
     grid-template-columns: repeat(5, 45px);
     justify-content: center;
-    align-items: center;
     gap: 5px;
     font-size: 28px;
     font-family: 'Courier New', monospace;
@@ -40,30 +38,28 @@ body {
 }
 #btnRow {
     display: flex;
-    margin-top: 20px;
     gap: 10px;
+    margin-top: 20px;
 }
 button {
     flex: 1;
     padding: 10px;
     font-size: 16px;
-    border: none;
-    border-radius: 5px;
     background: #4CAF50;
     color: white;
-    cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
-button:hover { background: #45a049; }
 #questionNum {
     color: blue;
-    margin-bottom: 20px;
     font-weight: bold;
     font-size: 20px;
+    margin-bottom: 20px;
 }
 #resultImg {
     display: none;
-    width: 160px;
-    margin: 15px auto 0 auto;
+    width: 140px;
+    margin: 15px auto;
 }
 </style>
 </head>
@@ -71,34 +67,27 @@ button:hover { background: #45a049; }
 <body>
 
 <div class="box" id="container">
+
     <div id="startPage">
         <h2>Posttest Chapter 2</h2>
         <p>Add and subtract numbers</p>
-
-        <input
-            type="text"
-            id="studentName"
-            placeholder="Enter your name"
-            style="width:180px; padding:8px; font-size:16px;"
-        >
-
+        <input type="text" id="studentName" placeholder="Enter your name" style="padding:8px; font-size:16px;">
         <br><br>
-
         <button onclick="startQuiz()">Start Quiz</button>
     </div>
 
     <div id="quizPage" style="display:none;">
-        <div id="questionNum">Question 1 / 40</div>
-
+        <div id="questionNum"></div>
         <div class="grid" id="grid"></div>
 
         <img id="resultImg" src="" alt="result">
 
         <div id="btnRow">
-            <button id="retryBtn" onclick="retryQuestion()">Retry</button>
+            <button id="retryBtn" onclick="retryQuestion()" style="display:none;">Retry</button>
             <button id="nextBtn" onclick="submitOrNext()">Submit</button>
         </div>
     </div>
+
 </div>
 
 <script>
@@ -108,19 +97,16 @@ let questions = [
     { nums:[210,123], type:'+', answer:'333' },
     { nums:[123,592], type:'+', answer:'715' },
     { nums:[442,85], type:'+', answer:'527' },
-
     { nums:[647,382], type:'+', answer:'1029' },
     { nums:[75,92], type:'+', answer:'167' },
     { nums:[122,746], type:'+', answer:'868' },
     { nums:[210,135], type:'+', answer:'345' },
     { nums:[513,409], type:'+', answer:'922' },
-
     { nums:[193,56], type:'+', answer:'249' },
     { nums:[310,92], type:'+', answer:'402' },
     { nums:[412,97], type:'+', answer:'509' },
     { nums:[403,512], type:'+', answer:'915' },
     { nums:[912,78], type:'+', answer:'990' },
-
     { nums:[183,192], type:'+', answer:'375' },
     { nums:[150,210], type:'+', answer:'360' },
     { nums:[963,310], type:'+', answer:'1273' },
@@ -132,19 +118,16 @@ let questions = [
     { nums:[782,441], type:'-', answer:'341' },
     { nums:[548,213], type:'-', answer:'335' },
     { nums:[610,132], type:'-', answer:'478' },
-
     { nums:[593,368], type:'-', answer:'225' },
     { nums:[293,107], type:'-', answer:'186' },
     { nums:[172,35], type:'-', answer:'137' },
     { nums:[310,40], type:'-', answer:'270' },
     { nums:[199,86], type:'-', answer:'113' },
-
     { nums:[547,183], type:'-', answer:'364' },
     { nums:[986,698], type:'-', answer:'288' },
     { nums:[647,253], type:'-', answer:'394' },
     { nums:[862,245], type:'-', answer:'617' },
     { nums:[187,72], type:'-', answer:'115' },
-
     { nums:[352,121], type:'-', answer:'231' },
     { nums:[712,543], type:'-', answer:'169' },
     { nums:[662,503], type:'-', answer:'159' },
@@ -154,34 +137,21 @@ let questions = [
 
 let current = 0;
 let userAnswers = new Array(questions.length).fill("");
-let studentName = "";
-let sectionName = "Posttest Chapter 2";
 let submitted = false;
-
-const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTLVzsrwq3EZQeCbfnXNE7sTJZHdtbqj6oW8jF1Kf0Q-fUo6bw/exec";
+let studentName = "";
 
 function startQuiz(){
-    studentName = document.getElementById('studentName').value.trim();
+    studentName = document.getElementById("studentName").value.trim();
 
-    if(!studentName){
+    if(studentName === ""){
         alert("Please enter your name.");
         return;
     }
 
-    document.getElementById('startPage').style.display = 'none';
-    document.getElementById('quizPage').style.display = 'block';
+    document.getElementById("startPage").style.display = "none";
+    document.getElementById("quizPage").style.display = "block";
 
     loadQuestion();
-}
-
-function answerInputs(){
-    return `
-        <div></div>
-        <div class="inputs"><input id="d0" maxlength="1"></div>
-        <div class="inputs"><input id="d1" maxlength="1"></div>
-        <div class="inputs"><input id="d2" maxlength="1"></div>
-        <div class="inputs"><input id="d3" maxlength="1"></div>
-    `;
 }
 
 function loadQuestion(){
@@ -189,84 +159,70 @@ function loadQuestion(){
     let gridHtml = "";
 
     q.nums.forEach((num, index) => {
-        let padded = num.toString().padStart(4, ' ');
-        let digits = padded.split('');
+        let padded = num.toString().padStart(4, " ");
+        let digits = padded.split("");
         let symbol = index === q.nums.length - 1 ? q.type : "";
 
         gridHtml += `<div>${symbol}</div>`;
-        gridHtml += `<div>${digits[0] === ' ' ? '' : digits[0]}</div>`;
-        gridHtml += `<div>${digits[1] === ' ' ? '' : digits[1]}</div>`;
-        gridHtml += `<div>${digits[2] === ' ' ? '' : digits[2]}</div>`;
-        gridHtml += `<div>${digits[3] === ' ' ? '' : digits[3]}</div>`;
+        gridHtml += `<div>${digits[0].trim()}</div>`;
+        gridHtml += `<div>${digits[1].trim()}</div>`;
+        gridHtml += `<div>${digits[2].trim()}</div>`;
+        gridHtml += `<div>${digits[3].trim()}</div>`;
     });
 
     gridHtml += `<div class="line"></div>`;
-    gridHtml += answerInputs();
+
+    gridHtml += `
+        <div></div>
+        <div class="inputs"><input id="d0" maxlength="1"></div>
+        <div class="inputs"><input id="d1" maxlength="1"></div>
+        <div class="inputs"><input id="d2" maxlength="1"></div>
+        <div class="inputs"><input id="d3" maxlength="1"></div>
+    `;
 
     document.getElementById("grid").innerHTML = gridHtml;
+    document.getElementById("questionNum").innerText = `Question ${current + 1} / ${questions.length}`;
 
-    let saved = userAnswers[current];
-
-    if(saved){
-        let digits = saved.toString().padStart(4, ' ').split('');
-
-        document.getElementById('d0').value = digits[0].trim();
-        document.getElementById('d1').value = digits[1].trim();
-        document.getElementById('d2').value = digits[2].trim();
-        document.getElementById('d3').value = digits[3].trim();
-    }
-
-    document.getElementById("questionNum").innerText =
-        `Question ${current + 1} / ${questions.length}`;
-
-    setTimeout(() => {
-        document.getElementById('d3').focus();
-    }, 50);
+    document.getElementById("resultImg").style.display = "none";
+    document.getElementById("retryBtn").style.display = "none";
+    document.getElementById("nextBtn").innerText = "Submit";
 
     submitted = false;
 
-    let img = document.getElementById('resultImg');
-    img.style.display = 'none';
-    img.src = "";
-
-    document.getElementById('retryBtn').style.display = 'none';
-    document.getElementById('nextBtn').innerText = 'Submit';
+    setTimeout(() => {
+        document.getElementById("d3").focus();
+    }, 50);
 }
 
 function saveAnswer(){
-    let d0 = document.getElementById('d0').value || '';
-    let d1 = document.getElementById('d1').value || '';
-    let d2 = document.getElementById('d2').value || '';
-    let d3 = document.getElementById('d3').value || '';
+    let answer =
+        (document.getElementById("d0").value || "") +
+        (document.getElementById("d1").value || "") +
+        (document.getElementById("d2").value || "") +
+        (document.getElementById("d3").value || "");
 
-    let combined = (d0 + d1 + d2 + d3).trim();
+    answer = answer.trim();
 
-    userAnswers[current] =
-        combined === "" ? "" : parseInt(combined, 10).toString();
+    userAnswers[current] = answer === "" ? "" : parseInt(answer, 10).toString();
 }
 
 function submitOrNext(){
     if(!submitted){
         saveAnswer();
 
-        let user = userAnswers[current] || "";
         let correct = questions[current].answer;
+        let user = userAnswers[current];
         let isCorrect = user === correct;
 
-        let img = document.getElementById('resultImg');
+        let img = document.getElementById("resultImg");
         img.src = isCorrect ? "correct.png" : "wrong.png";
         img.style.display = "block";
 
-        submitted = true;
-
-        let retryBtn = document.getElementById('retryBtn');
-        let nextBtn = document.getElementById('nextBtn');
-
-        retryBtn.style.display = 'block';
-
-        nextBtn.innerText =
+        document.getElementById("retryBtn").style.display = "block";
+        document.getElementById("nextBtn").innerText =
             current === questions.length - 1 ? "Finish" : "Next";
 
+        submitted = true;
     } else {
         nextQuestion();
     }
@@ -275,17 +231,10 @@ function submitOrNext(){
 function retryQuestion(){
     submitted = false;
     userAnswers[current] = "";
-
-    let img = document.getElementById('resultImg');
-    img.style.display = 'none';
-    img.src = "";
-
     loadQuestion();
 }
 
 function nextQuestion(){
-    saveAnswer();
-
     if(current === questions.length - 1){
         finishQuiz();
     } else {
@@ -295,65 +244,23 @@ function nextQuestion(){
 }
 
 function finishQuiz(){
-    saveAnswer();
-
     let score = 0;
-    let details = [];
 
     questions.forEach((q, i) => {
-        let user = userAnswers[i] || "";
-        let isCorrect = user === q.answer;
-
-        if(isCorrect){
+        if(userAnswers[i] === q.answer){
             score++;
-        } else {
-            details.push(`Q${i + 1}: User=${user || "blank"}, Correct=${q.answer}`);
         }
     });
 
-    let resultHtml = `
-        <div style="text-align:center;">
-            <h1>Quiz Finished!</h1>
-            <h2>Score: ${score} / ${questions.length}</h2>
-
-            <div style="text-align:left; display:inline-block; margin-bottom:20px;">
+    let html = `
+        <h1>Quiz Finished!</h1>
+        <h2>Score: ${score} / ${questions.length}</h2>
+        <button onclick="location.reload()" style="background:#2196F3; width:200px;">
+            Restart Quiz
+        </button>
     `;
 
-    questions.forEach((q, i) => {
-        let isCorrect = userAnswers[i] === q.answer;
-
-        resultHtml += `
-            <p>
-                ${isCorrect ? "✅" : "❌"}
-                Question ${i + 1}
-                ${!isCorrect ? "(Correct: " + q.answer + ")" : ""}
-            </p>
-        `;
-    });
-
-    resultHtml += `
-            </div>
-            <br>
-            <button onclick="location.reload()" style="background:#2196F3; width:200px;">
-                Restart Quiz
-            </button>
-        </div>
-    `;
-
-    document.getElementById('container').innerHTML = resultHtml;
-
-    fetch(sheetURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-            Name: studentName,
-            Section: sectionName,
-            Score: `${score} / ${questions.length}`,
-            Details: details.join("; "),
-            Time: new Date().toLocaleString()
-        })
-    }).catch(err => console.error("Save Error:", err));
+    document.getElementById("container").innerHTML = html;
 }
 </script>
 
