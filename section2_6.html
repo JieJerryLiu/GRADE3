@@ -41,35 +41,35 @@ button{flex:1;padding:10px;font-size:16px;background:#4CAF50;color:white;border:
 
 <script>
 const questions = [
-{ nums:[8,9,6], type:'+', answer:'23' },
-{ nums:[23,42,97], type:'+', answer:'162' },
-{ nums:[21,58,47], type:'+', answer:'126' },
-{ nums:[13,7,19], type:'+', answer:'39' },
-{ nums:[22,16,24], type:'+', answer:'62' },
+{ nums:, type:'+', answer:'23' },
+{ nums:, type:'+', answer:'162' },
+{ nums:, type:'+', answer:'126' },
+{ nums:, type:'+', answer:'39' },
+{ nums:, type:'+', answer:'62' },
 
-{ nums:[180,360,190], type:'+', answer:'730' },
-{ nums:[423,747,521], type:'+', answer:'1691' },
-{ nums:[123,423,415], type:'+', answer:'961' },
-{ nums:[180,360,190], type:'+', answer:'730' },
-{ nums:[5023,1764], type:'+', answer:'6787' },
+{ nums:, type:'+', answer:'730' },
+{ nums:, type:'+', answer:'1691' },
+{ nums:, type:'+', answer:'961' },
+{ nums:, type:'+', answer:'730' },
+{ nums:, type:'+', answer:'6787' },
 
-{ nums:[2201,970], type:'+', answer:'3171' },
-{ nums:[4321,2841], type:'+', answer:'7162' },
-{ nums:[1436,5120], type:'+', answer:'6556' },
-{ nums:[1960,420], type:'-', answer:'1540' },
-{ nums:[1340,380], type:'-', answer:'960' },
+{ nums:, type:'+', answer:'3171' },
+{ nums:, type:'+', answer:'7162' },
+{ nums:, type:'+', answer:'6556' },
+{ nums:, type:'-', answer:'1540' },
+{ nums:, type:'-', answer:'960' },
 
-{ nums:[4120,3290], type:'-', answer:'830' },
-{ nums:[720,340], type:'-', answer:'380' },
-{ nums:[5947,4272], type:'-', answer:'1675' },
-{ nums:[312,20], type:'-', answer:'292' },
-{ nums:[1501,1200], type:'-', answer:'301' },
+{ nums:, type:'-', answer:'830' },
+{ nums:, type:'-', answer:'380' },
+{ nums:, type:'-', answer:'1675' },
+{ nums:, type:'-', answer:'292' },
+{ nums:, type:'-', answer:'301' },
 
-{ nums:[5803,1992], type:'-', answer:'3811' },
-{ nums:[1906,1173], type:'-', answer:'733' },
-{ nums:[5120,1780], type:'-', answer:'3340' },
-{ nums:[4500,720], type:'-', answer:'3780' },
-{ nums:[9645,6823], type:'-', answer:'2822' },
+{ nums:, type:'-', answer:'3811' },
+{ nums:, type:'-', answer:'733' },
+{ nums:, type:'-', answer:'3340' },
+{ nums:, type:'-', answer:'3780' },
+{ nums:, type:'-', answer:'2822' },
 
 { roundNum:534, place:'tens', type:'round', answer:'530' },
 { roundNum:969, place:'hundreds', type:'round', answer:'1000' },
@@ -80,6 +80,11 @@ const questions = [
 let current = 0;
 let submitted = false;
 let userAnswers = Array(questions.length).fill("");
+let studentName = "";
+const sectionName = "Pretest Chapter 3";
+
+// ⚠️ 请在此处替换为您在 Google Apps Script 部署得到的最新 Web 应用程序 URL
+const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTLVzsrwq3EZQeCbfnXNE7sTJZHdtbqj6oW8jF1Kf0Q-fUo6bw/exec";
 
 const startPage = document.getElementById("startPage");
 const quizPage = document.getElementById("quizPage");
@@ -95,8 +100,8 @@ nextBtn.addEventListener("click", submitOrNext);
 retryBtn.addEventListener("click", retryQuestion);
 
 function startQuiz(){
-    const name = document.getElementById("studentName").value.trim();
-    if(name === ""){
+    studentName = document.getElementById("studentName").value.trim();
+    if(studentName === ""){
         alert("Please enter your name.");
         return;
     }
@@ -135,10 +140,10 @@ function loadQuestion(){
             const symbol = index === q.nums.length - 1 ? q.type : "";
 
             html += `<div>${symbol}</div>`;
-            html += `<div>${digits[0].trim()}</div>`;
-            html += `<div>${digits[1].trim()}</div>`;
-            html += `<div>${digits[2].trim()}</div>`;
-            html += `<div>${digits[3].trim()}</div>`;
+            html += `<div>${digits.trim()}</div>`;
+            html += `<div>${digits.trim()}</div>`;
+            html += `<div>${digits.trim()}</div>`;
+            html += `<div>${digits.trim()}</div>`;
         });
 
         html += `<div class="line"></div>`;
@@ -210,20 +215,66 @@ function retryQuestion(){
 
 function finishQuiz(){
     let score = 0;
+    let details = [];
+    let resultHtml = `
+        <div style="text-align:center; max-height: 500px; overflow-y: auto; padding-right: 5px;">
+            <h1>Quiz Finished!</h1>
+            <h2>Score: <span id="finalScore">Calculating...</span> / ${questions.length}</h2>
+            <div style="text-align:left; display:inline-block; margin-bottom:20px; font-size:16px; width:100%;">
+    `;
 
     questions.forEach((q, i) => {
-        if(userAnswers[i] === q.answer){
+        const user = userAnswers[i] || "";
+        const isCorrect = user === q.answer;
+        
+        if(isCorrect) {
             score++;
+        } else {
+            // 构造上传到 Google 电子表格的错误明细
+            let qText = q.type === 'round' ? `Round ${q.roundNum} to ${q.place}` : q.nums.join(q.type);
+            details.push(`Q${i+1} (${qText}): User=${user||"blank"}, Correct=${q.answer}`);
+        }
+
+        // 构造显示给学生的逐题反馈 HTML
+        if(q.type === 'round') {
+            resultHtml += `<p style="margin:8px 0; border-bottom:1px dashed #ccc; padding-bottom:5px;">
+                ${isCorrect ? "✅" : "❌"} <b>Q${i+1}</b>: Round ${q.roundNum} to ${q.place}. <br>
+                Your Answer: <span style="color:${isCorrect?'green':'red'}">${user||"blank"}</span>
+                ${!isCorrect ? ` | Correct: <span style="color:green">${q.answer}</span>` : ""}
+            </p>`;
+        } else {
+            resultHtml += `<p style="margin:8px 0; border-bottom:1px dashed #ccc; padding-bottom:5px;">
+                ${isCorrect ? "✅" : "❌"} <b>Q${i+1}</b>: ${q.nums.join(` ${q.type} `)} <br>
+                Your Answer: <span style="color:${isCorrect?'green':'red'}">${user||"blank"}</span>
+                ${!isCorrect ? ` | Correct: <span style="color:green">${q.answer}</span>` : ""}
+            </p>`;
         }
     });
 
-    document.getElementById("container").innerHTML = `
-        <h1>Quiz Finished!</h1>
-        <h2>Score: ${score} / ${questions.length}</h2>
-        <button onclick="location.reload()" style="background:#2196F3;width:200px;">
-            Restart Quiz
-        </button>
+    resultHtml += `
+            </div>
+            <br>
+            <button onclick="location.reload()" style="background:#2196F3; width:200px;">Restart Quiz</button>
+        </div>
     `;
+
+    // 将生成的 HTML 结构替换到容器中
+    document.getElementById("container").innerHTML = resultHtml;
+    document.getElementById("finalScore").textContent = score;
+
+    // 发送数据到 Google 表格
+    fetch(sheetURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            Name: studentName,
+            Section: sectionName,
+            Score: `${score} / ${questions.length}`,
+            Details: details.length > 0 ? details.join("; ") : "Perfect Score!",
+            Time: new Date().toLocaleString()
+        })
+    }).catch(err => console.error("Save Error:", err));
 }
 </script>
 
