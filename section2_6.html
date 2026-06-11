@@ -83,7 +83,6 @@ let userAnswers = Array(questions.length).fill("");
 let studentName = "";
 const sectionName = "Pretest Chapter 3";
 
-// Google Apps Script Web App URL
 const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTLVzsrwq3EZQeCbfnXNE7sTJZHdtbqj6oW8jF1Kf0Q-fUo6bw/exec";
 
 function startQuiz(){
@@ -140,16 +139,26 @@ function loadQuestion(){
     document.getElementById("grid").innerHTML = html;
     document.getElementById("questionNum").textContent = `Question ${current + 1} / ${questions.length}`;
 
+    // Safely reset components
     const resultBox = document.getElementById("resultBox");
-    resultBox.style.display = "none";
-    resultBox.textContent = "";
+    if(resultBox) {
+        resultBox.style.display = "none";
+        resultBox.textContent = "";
+    }
     
-    document.getElementById("retryBtn").style.display = "none";
+    const retryBtn = document.getElementById("retryBtn");
+    if(retryBtn) {
+        retryBtn.style.display = "none";
+    }
     
     const nextBtn = document.getElementById("nextBtn");
-    nextBtn.textContent = "Submit";
+    if(nextBtn) {
+        nextBtn.textContent = "Submit";
+    }
+    
     submitted = false;
 
+    // Auto-tabbing mechanism
     const inputs = document.querySelectorAll(".inputs input");
     inputs.forEach((input, index) => {
         input.addEventListener("input", () => {
@@ -160,16 +169,17 @@ function loadQuestion(){
         });
     });
 
-    document.getElementById("d3").focus();
+    const focusInput = document.getElementById("d3");
+    if(focusInput) focusInput.focus();
 }
 
 function getAnswer(){
-    const answer =
-        document.getElementById("d0").value +
-        document.getElementById("d1").value +
-        document.getElementById("d2").value +
-        document.getElementById("d3").value;
-
+    const d0 = document.getElementById("d0") ? document.getElementById("d0").value : "";
+    const d1 = document.getElementById("d1") ? document.getElementById("d1").value : "";
+    const d2 = document.getElementById("d2") ? document.getElementById("d2").value : "";
+    const d3 = document.getElementById("d3") ? document.getElementById("d3").value : "";
+    
+    const answer = d0 + d1 + d2 + d3;
     return answer.trim() === "" ? "" : String(parseInt(answer, 10));
 }
 
@@ -184,11 +194,13 @@ function submitOrNext(){
 
         const correct = questions[current].answer;
 
-        resultBox.textContent = answer === correct ? "✅" : "❌";
-        resultBox.style.display = "block";
+        if(resultBox) {
+            resultBox.textContent = answer === correct ? "✅" : "❌";
+            resultBox.style.display = "block";
+        }
 
-        retryBtn.style.display = "block";
-        nextBtn.textContent = current === questions.length - 1 ? "Finish" : "Next";
+        if(retryBtn) retryBtn.style.display = "block";
+        if(nextBtn) nextBtn.textContent = current === questions.length - 1 ? "Finish" : "Next";
 
         submitted = true;
     } else {
@@ -251,7 +263,9 @@ function finishQuiz(){
     `;
 
     document.getElementById("container").innerHTML = resultHtml;
-    document.getElementById("finalScore").textContent = score;
+    
+    const scoreDisplay = document.getElementById("finalScore");
+    if(scoreDisplay) scoreDisplay.textContent = score;
 
     fetch(sheetURL, {
         method: 'POST',
