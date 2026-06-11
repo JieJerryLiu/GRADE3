@@ -24,7 +24,7 @@ button{flex:1;padding:10px;font-size:16px;background:#4CAF50;color:white;border:
         <p>Add, subtract, and round numbers</p>
         <input type="text" id="studentName" placeholder="Enter your name" style="padding:8px;font-size:16px;">
         <br><br>
-        <button id="startBtn">Start Quiz</button>
+        <button id="startBtn" onclick="startQuiz()">Start Quiz</button>
     </div>
 
     <div id="quizPage" style="display:none;">
@@ -33,8 +33,8 @@ button{flex:1;padding:10px;font-size:16px;background:#4CAF50;color:white;border:
         <div id="resultBox"></div>
 
         <div id="btnRow">
-            <button id="retryBtn" style="display:none;">Retry</button>
-            <button id="nextBtn">Submit</button>
+            <button id="retryBtn" style="display:none;" onclick="retryQuestion()">Retry</button>
+            <button id="nextBtn" onclick="submitOrNext()">Submit</button>
         </div>
     </div>
 </div>
@@ -83,21 +83,8 @@ let userAnswers = Array(questions.length).fill("");
 let studentName = "";
 const sectionName = "Pretest Chapter 3";
 
-// ⚠️ 请在此处替换为您在 Google Apps Script 部署得到的最新 Web 应用程序 URL
+// Google Apps Script Web App URL
 const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTLVzsrwq3EZQeCbfnXNE7sTJZHdtbqj6oW8jF1Kf0Q-fUo6bw/exec";
-
-const startPage = document.getElementById("startPage");
-const quizPage = document.getElementById("quizPage");
-const startBtn = document.getElementById("startBtn");
-const nextBtn = document.getElementById("nextBtn");
-const retryBtn = document.getElementById("retryBtn");
-const grid = document.getElementById("grid");
-const questionNum = document.getElementById("questionNum");
-const resultBox = document.getElementById("resultBox");
-
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", submitOrNext);
-retryBtn.addEventListener("click", retryQuestion);
 
 function startQuiz(){
     studentName = document.getElementById("studentName").value.trim();
@@ -106,8 +93,8 @@ function startQuiz(){
         return;
     }
 
-    startPage.style.display = "none";
-    quizPage.style.display = "block";
+    document.getElementById("startPage").style.display = "none";
+    document.getElementById("quizPage").style.display = "block";
     loadQuestion();
 }
 
@@ -150,17 +137,20 @@ function loadQuestion(){
         html += makeInputs();
     }
 
-    grid.innerHTML = html;
-    questionNum.textContent = `Question ${current + 1} / ${questions.length}`;
+    document.getElementById("grid").innerHTML = html;
+    document.getElementById("questionNum").textContent = `Question ${current + 1} / ${questions.length}`;
 
+    const resultBox = document.getElementById("resultBox");
     resultBox.style.display = "none";
     resultBox.textContent = "";
-    retryBtn.style.display = "none";
+    
+    document.getElementById("retryBtn").style.display = "none";
+    
+    const nextBtn = document.getElementById("nextBtn");
     nextBtn.textContent = "Submit";
     submitted = false;
 
     const inputs = document.querySelectorAll(".inputs input");
-
     inputs.forEach((input, index) => {
         input.addEventListener("input", () => {
             input.value = input.value.replace(/[^0-9]/g, "");
@@ -184,6 +174,10 @@ function getAnswer(){
 }
 
 function submitOrNext(){
+    const resultBox = document.getElementById("resultBox");
+    const retryBtn = document.getElementById("retryBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
     if(!submitted){
         const answer = getAnswer();
         userAnswers[current] = answer;
@@ -217,7 +211,7 @@ function finishQuiz(){
     let score = 0;
     let details = [];
     let resultHtml = `
-        <div style="text-align:center; max-height: 500px; overflow-y: auto; padding-right: 5px;">
+        <div style="text-align:center; max-height: 420px; overflow-y: auto; padding-right: 5px;">
             <h1>Quiz Finished!</h1>
             <h2>Score: <span id="finalScore">Calculating...</span> / ${questions.length}</h2>
             <div style="text-align:left; display:inline-block; margin-bottom:20px; font-size:16px; width:100%;">
@@ -230,12 +224,10 @@ function finishQuiz(){
         if(isCorrect) {
             score++;
         } else {
-            // 构造上传到 Google 电子表格的错误明细
             let qText = q.type === 'round' ? `Round ${q.roundNum} to ${q.place}` : q.nums.join(q.type);
             details.push(`Q${i+1} (${qText}): User=${user||"blank"}, Correct=${q.answer}`);
         }
 
-        // 构造显示给学生的逐题反馈 HTML
         if(q.type === 'round') {
             resultHtml += `<p style="margin:8px 0; border-bottom:1px dashed #ccc; padding-bottom:5px;">
                 ${isCorrect ? "✅" : "❌"} <b>Q${i+1}</b>: Round ${q.roundNum} to ${q.place}. <br>
@@ -258,11 +250,9 @@ function finishQuiz(){
         </div>
     `;
 
-    // 将生成的 HTML 结构替换到容器中
     document.getElementById("container").innerHTML = resultHtml;
     document.getElementById("finalScore").textContent = score;
 
-    // 发送数据到 Google 表格
     fetch(sheetURL, {
         method: 'POST',
         mode: 'no-cors',
