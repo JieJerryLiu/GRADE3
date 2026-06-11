@@ -4,175 +4,132 @@
 <meta charset="UTF-8">
 <title>Posttest Chapter 2</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    text-align: center;
-    padding-top: 50px;
-}
-.box {
-    background: white;
-    width: 330px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 8px;
-}
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 45px);
-    justify-content: center;
-    gap: 5px;
-    font-size: 28px;
-    font-family: 'Courier New', monospace;
-}
-.line {
-    grid-column: span 5;
-    border-top: 3px solid black;
-    margin: 5px 0;
-}
-.inputs input {
-    width: 35px;
-    height: 35px;
-    font-size: 22px;
-    text-align: center;
-}
-#btnRow {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-button {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-#questionNum {
-    color: blue;
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 20px;
-}
-#resultImg {
-    display: none;
-    width: 140px;
-    margin: 15px auto;
-}
+body{font-family:Arial;background:#f5f5f5;text-align:center;padding-top:50px;}
+.box{background:white;width:330px;margin:auto;padding:20px;border-radius:8px;}
+.grid{display:grid;grid-template-columns:repeat(5,45px);justify-content:center;gap:5px;font-size:28px;font-family:'Courier New',monospace;}
+.line{grid-column:span 5;border-top:3px solid black;margin:5px 0;}
+.inputs input{width:35px;height:35px;font-size:22px;text-align:center;}
+#btnRow{display:flex;gap:10px;margin-top:20px;}
+button{flex:1;padding:10px;font-size:16px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;}
+#questionNum{color:blue;font-weight:bold;font-size:20px;margin-bottom:20px;}
+#resultBox{font-size:40px;margin-top:15px;display:none;}
 </style>
 </head>
 
 <body>
 
 <div class="box" id="container">
-
     <div id="startPage">
         <h2>Posttest Chapter 2</h2>
         <p>Add and subtract numbers</p>
-        <input type="text" id="studentName" placeholder="Enter your name" style="padding:8px; font-size:16px;">
+        <input type="text" id="studentName" placeholder="Enter your name" style="padding:8px;font-size:16px;">
         <br><br>
-        <button onclick="startQuiz()">Start Quiz</button>
+        <button id="startBtn">Start Quiz</button>
     </div>
 
     <div id="quizPage" style="display:none;">
         <div id="questionNum"></div>
         <div class="grid" id="grid"></div>
-
-        <img id="resultImg" src="" alt="result">
+        <div id="resultBox"></div>
 
         <div id="btnRow">
-            <button id="retryBtn" onclick="retryQuestion()" style="display:none;">Retry</button>
-            <button id="nextBtn" onclick="submitOrNext()">Submit</button>
+            <button id="retryBtn" style="display:none;">Retry</button>
+            <button id="nextBtn">Submit</button>
         </div>
     </div>
-
 </div>
 
 <script>
-let questions = [
-    { nums:[212,391], type:'+', answer:'603' },
-    { nums:[543,286], type:'+', answer:'829' },
-    { nums:[210,123], type:'+', answer:'333' },
-    { nums:[123,592], type:'+', answer:'715' },
-    { nums:[442,85], type:'+', answer:'527' },
-    { nums:[647,382], type:'+', answer:'1029' },
-    { nums:[75,92], type:'+', answer:'167' },
-    { nums:[122,746], type:'+', answer:'868' },
-    { nums:[210,135], type:'+', answer:'345' },
-    { nums:[513,409], type:'+', answer:'922' },
-    { nums:[193,56], type:'+', answer:'249' },
-    { nums:[310,92], type:'+', answer:'402' },
-    { nums:[412,97], type:'+', answer:'509' },
-    { nums:[403,512], type:'+', answer:'915' },
-    { nums:[912,78], type:'+', answer:'990' },
-    { nums:[183,192], type:'+', answer:'375' },
-    { nums:[150,210], type:'+', answer:'360' },
-    { nums:[963,310], type:'+', answer:'1273' },
-    { nums:[193,86], type:'+', answer:'279' },
-    { nums:[842,908], type:'+', answer:'1750' },
+const questions = [
+{nums:[212,391],type:"+",answer:"603"},
+{nums:[543,286],type:"+",answer:"829"},
+{nums:[210,123],type:"+",answer:"333"},
+{nums:[123,592],type:"+",answer:"715"},
+{nums:[442,85],type:"+",answer:"527"},
+{nums:[647,382],type:"+",answer:"1029"},
+{nums:[75,92],type:"+",answer:"167"},
+{nums:[122,746],type:"+",answer:"868"},
+{nums:[210,135],type:"+",answer:"345"},
+{nums:[513,409],type:"+",answer:"922"},
+{nums:[193,56],type:"+",answer:"249"},
+{nums:[310,92],type:"+",answer:"402"},
+{nums:[412,97],type:"+",answer:"509"},
+{nums:[403,512],type:"+",answer:"915"},
+{nums:[912,78],type:"+",answer:"990"},
+{nums:[183,192],type:"+",answer:"375"},
+{nums:[150,210],type:"+",answer:"360"},
+{nums:[963,310],type:"+",answer:"1273"},
+{nums:[193,86],type:"+",answer:"279"},
+{nums:[842,908],type:"+",answer:"1750"},
 
-    { nums:[192,85], type:'-', answer:'107' },
-    { nums:[712,402], type:'-', answer:'310' },
-    { nums:[782,441], type:'-', answer:'341' },
-    { nums:[548,213], type:'-', answer:'335' },
-    { nums:[610,132], type:'-', answer:'478' },
-    { nums:[593,368], type:'-', answer:'225' },
-    { nums:[293,107], type:'-', answer:'186' },
-    { nums:[172,35], type:'-', answer:'137' },
-    { nums:[310,40], type:'-', answer:'270' },
-    { nums:[199,86], type:'-', answer:'113' },
-    { nums:[547,183], type:'-', answer:'364' },
-    { nums:[986,698], type:'-', answer:'288' },
-    { nums:[647,253], type:'-', answer:'394' },
-    { nums:[862,245], type:'-', answer:'617' },
-    { nums:[187,72], type:'-', answer:'115' },
-    { nums:[352,121], type:'-', answer:'231' },
-    { nums:[712,543], type:'-', answer:'169' },
-    { nums:[662,503], type:'-', answer:'159' },
-    { nums:[187,72], type:'-', answer:'115' },
-    { nums:[456,269], type:'-', answer:'187' }
+{nums:[192,85],type:"-",answer:"107"},
+{nums:[712,402],type:"-",answer:"310"},
+{nums:[782,441],type:"-",answer:"341"},
+{nums:[548,213],type:"-",answer:"335"},
+{nums:[610,132],type:"-",answer:"478"},
+{nums:[593,368],type:"-",answer:"225"},
+{nums:[293,107],type:"-",answer:"186"},
+{nums:[172,35],type:"-",answer:"137"},
+{nums:[310,40],type:"-",answer:"270"},
+{nums:[199,86],type:"-",answer:"113"},
+{nums:[547,183],type:"-",answer:"364"},
+{nums:[986,698],type:"-",answer:"288"},
+{nums:[647,253],type:"-",answer:"394"},
+{nums:[862,245],type:"-",answer:"617"},
+{nums:[187,72],type:"-",answer:"115"},
+{nums:[352,121],type:"-",answer:"231"},
+{nums:[712,543],type:"-",answer:"169"},
+{nums:[662,503],type:"-",answer:"159"},
+{nums:[187,72],type:"-",answer:"115"},
+{nums:[456,269],type:"-",answer:"187"}
 ];
 
 let current = 0;
-let userAnswers = new Array(questions.length).fill("");
 let submitted = false;
-let studentName = "";
+let userAnswers = Array(questions.length).fill("");
+
+const startPage = document.getElementById("startPage");
+const quizPage = document.getElementById("quizPage");
+const startBtn = document.getElementById("startBtn");
+const nextBtn = document.getElementById("nextBtn");
+const retryBtn = document.getElementById("retryBtn");
+const grid = document.getElementById("grid");
+const questionNum = document.getElementById("questionNum");
+const resultBox = document.getElementById("resultBox");
+
+startBtn.addEventListener("click", startQuiz);
+nextBtn.addEventListener("click", submitOrNext);
+retryBtn.addEventListener("click", retryQuestion);
 
 function startQuiz(){
-    studentName = document.getElementById("studentName").value.trim();
-
-    if(studentName === ""){
+    const name = document.getElementById("studentName").value.trim();
+    if(name === ""){
         alert("Please enter your name.");
         return;
     }
 
-    document.getElementById("startPage").style.display = "none";
-    document.getElementById("quizPage").style.display = "block";
-
+    startPage.style.display = "none";
+    quizPage.style.display = "block";
     loadQuestion();
 }
 
 function loadQuestion(){
-    let q = questions[current];
-    let gridHtml = "";
+    const q = questions[current];
+    let html = "";
 
     q.nums.forEach((num, index) => {
-        let padded = num.toString().padStart(4, " ");
-        let digits = padded.split("");
-        let symbol = index === q.nums.length - 1 ? q.type : "";
+        const digits = String(num).padStart(4, " ").split("");
+        const symbol = index === q.nums.length - 1 ? q.type : "";
 
-        gridHtml += `<div>${symbol}</div>`;
-        gridHtml += `<div>${digits[0].trim()}</div>`;
-        gridHtml += `<div>${digits[1].trim()}</div>`;
-        gridHtml += `<div>${digits[2].trim()}</div>`;
-        gridHtml += `<div>${digits[3].trim()}</div>`;
+        html += `<div>${symbol}</div>`;
+        html += `<div>${digits[0].trim()}</div>`;
+        html += `<div>${digits[1].trim()}</div>`;
+        html += `<div>${digits[2].trim()}</div>`;
+        html += `<div>${digits[3].trim()}</div>`;
     });
 
-    gridHtml += `<div class="line"></div>`;
-
-    gridHtml += `
+    html += `<div class="line"></div>`;
+    html += `
         <div></div>
         <div class="inputs"><input id="d0" maxlength="1"></div>
         <div class="inputs"><input id="d1" maxlength="1"></div>
@@ -180,67 +137,64 @@ function loadQuestion(){
         <div class="inputs"><input id="d3" maxlength="1"></div>
     `;
 
-    document.getElementById("grid").innerHTML = gridHtml;
-    document.getElementById("questionNum").innerText = `Question ${current + 1} / ${questions.length}`;
+    grid.innerHTML = html;
+    questionNum.textContent = `Question ${current + 1} / ${questions.length}`;
 
-    document.getElementById("resultImg").style.display = "none";
-    document.getElementById("retryBtn").style.display = "none";
-    document.getElementById("nextBtn").innerText = "Submit";
-
+    resultBox.style.display = "none";
+    resultBox.textContent = "";
+    retryBtn.style.display = "none";
+    nextBtn.textContent = "Submit";
     submitted = false;
 
-    setTimeout(() => {
-        document.getElementById("d3").focus();
-    }, 50);
+    const inputs = document.querySelectorAll(".inputs input");
+    inputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(/[^0-9]/g, "");
+            if(input.value && index < inputs.length - 1){
+                inputs[index + 1].focus();
+            }
+        });
+    });
+
+    document.getElementById("d3").focus();
 }
 
-function saveAnswer(){
-    let answer =
-        (document.getElementById("d0").value || "") +
-        (document.getElementById("d1").value || "") +
-        (document.getElementById("d2").value || "") +
-        (document.getElementById("d3").value || "");
+function getAnswer(){
+    const answer =
+        document.getElementById("d0").value +
+        document.getElementById("d1").value +
+        document.getElementById("d2").value +
+        document.getElementById("d3").value;
 
-    answer = answer.trim();
-
-    userAnswers[current] = answer === "" ? "" : parseInt(answer, 10).toString();
+    return answer.trim() === "" ? "" : String(parseInt(answer, 10));
 }
 
 function submitOrNext(){
     if(!submitted){
-        saveAnswer();
+        const answer = getAnswer();
+        userAnswers[current] = answer;
 
-        let correct = questions[current].answer;
-        let user = userAnswers[current];
-        let isCorrect = user === correct;
+        const correct = questions[current].answer;
 
-        let img = document.getElementById("resultImg");
-        img.src = isCorrect ? "correct.png" : "wrong.png";
-        img.style.display = "block";
+        resultBox.textContent = answer === correct ? "✅" : "❌";
+        resultBox.style.display = "block";
 
-        document.getElementById("retryBtn").style.display = "block";
-        document.getElementById("nextBtn").innerText =
-            current === questions.length - 1 ? "Finish" : "Next";
-
+        retryBtn.style.display = "block";
+        nextBtn.textContent = current === questions.length - 1 ? "Finish" : "Next";
         submitted = true;
     } else {
-        nextQuestion();
+        if(current === questions.length - 1){
+            finishQuiz();
+        } else {
+            current++;
+            loadQuestion();
+        }
     }
 }
 
 function retryQuestion(){
-    submitted = false;
     userAnswers[current] = "";
     loadQuestion();
-}
-
-function nextQuestion(){
-    if(current === questions.length - 1){
-        finishQuiz();
-    } else {
-        current++;
-        loadQuestion();
-    }
 }
 
 function finishQuiz(){
@@ -252,15 +206,13 @@ function finishQuiz(){
         }
     });
 
-    let html = `
+    document.getElementById("container").innerHTML = `
         <h1>Quiz Finished!</h1>
         <h2>Score: ${score} / ${questions.length}</h2>
-        <button onclick="location.reload()" style="background:#2196F3; width:200px;">
+        <button onclick="location.reload()" style="background:#2196F3;width:200px;">
             Restart Quiz
         </button>
     `;
-
-    document.getElementById("container").innerHTML = html;
 }
 </script>
 
