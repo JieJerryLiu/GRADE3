@@ -3,90 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <title>Pretest Chapter 2</title>
+
 <style>
-body{font-family:Arial;background:#f5f5f5;text-align:center;padding-top:50px;}
-.box{background:white;width:330px;margin:auto;padding:20px;border-radius:8px;}
-.grid{display:grid;grid-template-columns:repeat(5,45px);justify-content:center;gap:5px;font-size:28px;font-family:'Courier New',monospace;}
-.line{grid-column:span 5;border-top:3px solid black;margin:5px 0;}
-.inputs input{width:35px;height:35px;font-size:22px;text-align:center;}
-#btnRow{display:flex;gap:10px;margin-top:20px;}
-button{flex:1;padding:10px;font-size:16px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;}
-#questionNum{color:blue;font-weight:bold;font-size:20px;margin-bottom:20px;}
-#resultBox{font-size:40px;margin-top:15px;display:none;}
+body{
+    font-family:Arial;
+    background:#f5f5f5;
+    text-align:center;
+    padding-top:50px;
+}
+
+.box{
+    background:white;
+    width:330px;
+    margin:auto;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(5,45px);
+    justify-content:center;
+    gap:5px;
+    font-size:28px;
+    font-family:'Courier New',monospace;
+    margin-top:10px;
+}
+
+.line{
+    grid-column:span 5;
+    border-top:3px solid black;
+    margin:5px 0;
+}
+
+.inputs input{
+    width:35px;
+    height:35px;
+    font-size:22px;
+    text-align:center;
+}
+
+#btnRow{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+    padding:10px;
+    font-size:16px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+#questionNum{
+    color:blue;
+    font-weight:bold;
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+#resultBox{
+    font-size:40px;
+    margin-top:15px;
+    display:none;
+}
 </style>
 </head>
 
 <body>
 
 <div class="box" id="container">
+
+    <!-- START PAGE -->
     <div id="startPage">
         <h2>Pretest Chapter 2</h2>
         <p>Add, subtract, and round numbers</p>
-        <input type="text" id="studentName" placeholder="Enter your name" style="padding:8px;font-size:16px;">
+
+        <input 
+            type="text" 
+            id="studentName" 
+            placeholder="Enter your name"
+            style="padding:8px;font-size:16px;"
+        >
+
         <br><br>
-        <button id="startBtn" onclick="startQuiz()">Start Quiz</button>
+
+        <button onclick="startQuiz()">Start Quiz</button>
     </div>
 
+    <!-- QUIZ PAGE -->
     <div id="quizPage" style="display:none;">
+
         <div id="questionNum"></div>
+
         <div class="grid" id="grid"></div>
+
         <div id="resultBox"></div>
 
         <div id="btnRow">
-            <button id="retryBtn" style="display:none;" onclick="retryQuestion()">Retry</button>
-            <button id="nextBtn" onclick="submitOrNext()">Submit</button>
+            <button id="retryBtn" style="display:none;" onclick="retryQuestion()">
+                Retry
+            </button>
+
+            <button id="nextBtn" onclick="submitOrNext()">
+                Submit
+            </button>
         </div>
+
     </div>
 </div>
 
 <script>
+
 const questions = [
-{ nums:, type:'+', answer:'23' },
-{ nums:, type:'+', answer:'162' },
-{ nums:, type:'+', answer:'126' },
-{ nums:, type:'+', answer:'39' },
-{ nums:, type:'+', answer:'62' },
 
-{ nums:, type:'+', answer:'730' },
-{ nums:, type:'+', answer:'1691' },
-{ nums:, type:'+', answer:'961' },
-{ nums:, type:'+', answer:'730' },
-{ nums:, type:'+', answer:'6787' },
+    { nums:[12,11], type:'+', answer:'23' },
+    { nums:[98,64], type:'+', answer:'162' },
+    { nums:[80,46], type:'+', answer:'126' },
+    { nums:[25,14], type:'+', answer:'39' },
+    { nums:[31,31], type:'+', answer:'62' },
 
-{ nums:, type:'+', answer:'3171' },
-{ nums:, type:'+', answer:'7162' },
-{ nums:, type:'+', answer:'6556' },
-{ nums:, type:'-', answer:'1540' },
-{ nums:, type:'-', answer:'960' },
+    { nums:[500,230], type:'+', answer:'730' },
+    { nums:[900,791], type:'+', answer:'1691' },
+    { nums:[500,461], type:'+', answer:'961' },
+    { nums:[320,410], type:'+', answer:'730' },
+    { nums:[4000,2787], type:'+', answer:'6787' },
 
-{ nums:, type:'-', answer:'830' },
-{ nums:, type:'-', answer:'380' },
-{ nums:, type:'-', answer:'1675' },
-{ nums:, type:'-', answer:'292' },
-{ nums:, type:'-', answer:'301' },
+    { nums:[1500,1671], type:'+', answer:'3171' },
+    { nums:[4000,3162], type:'+', answer:'7162' },
+    { nums:[3000,3556], type:'+', answer:'6556' },
 
-{ nums:, type:'-', answer:'3811' },
-{ nums:, type:'-', answer:'733' },
-{ nums:, type:'-', answer:'3340' },
-{ nums:, type:'-', answer:'3780' },
-{ nums:, type:'-', answer:'2822' },
+    { nums:[2000,460], type:'-', answer:'1540' },
+    { nums:[1500,540], type:'-', answer:'960' },
+    { nums:[1000,170], type:'-', answer:'830' },
+    { nums:[900,520], type:'-', answer:'380' },
+    { nums:[3000,1325], type:'-', answer:'1675' },
+    { nums:[500,208], type:'-', answer:'292' },
+    { nums:[700,399], type:'-', answer:'301' },
 
-{ roundNum:534, place:'tens', type:'round', answer:'530' },
-{ roundNum:969, place:'hundreds', type:'round', answer:'1000' },
-{ roundNum:831, place:'hundreds', type:'round', answer:'800' },
-{ roundNum:419, place:'tens', type:'round', answer:'420' }
+    { nums:[5000,1189], type:'-', answer:'3811' },
+    { nums:[2000,1267], type:'-', answer:'733' },
+    { nums:[7000,3660], type:'-', answer:'3340' },
+    { nums:[9000,5220], type:'-', answer:'3780' },
+    { nums:[5000,2178], type:'-', answer:'2822' },
+
+    { roundNum:534, place:'tens', type:'round', answer:'530' },
+    { roundNum:969, place:'hundreds', type:'round', answer:'1000' },
+    { roundNum:831, place:'hundreds', type:'round', answer:'800' },
+    { roundNum:419, place:'tens', type:'round', answer:'420' }
+
 ];
 
 let current = 0;
 let submitted = false;
 let userAnswers = Array(questions.length).fill("");
 let studentName = "";
-const sectionName = "Pretest Chapter 2";
-
-const sheetURL = "https://script.google.com/macros/s/AKfycbwHkMC01_kIZ3S5Hp1fkTLVzsrwq3EZQeCbfnXNE7sTJZHdtbqj6oW8jF1Kf0Q-fUo6bw/exec";
 
 function startQuiz(){
+
     studentName = document.getElementById("studentName").value.trim();
+
     if(studentName === ""){
         alert("Please enter your name.");
         return;
@@ -94,192 +180,249 @@ function startQuiz(){
 
     document.getElementById("startPage").style.display = "none";
     document.getElementById("quizPage").style.display = "block";
+
     loadQuestion();
 }
 
 function makeInputs(){
+
     return `
         <div></div>
-        <div class="inputs"><input id="d0" maxlength="1"></div>
-        <div class="inputs"><input id="d1" maxlength="1"></div>
-        <div class="inputs"><input id="d2" maxlength="1"></div>
-        <div class="inputs"><input id="d3" maxlength="1"></div>
+
+        <div class="inputs">
+            <input id="d0" maxlength="1">
+        </div>
+
+        <div class="inputs">
+            <input id="d1" maxlength="1">
+        </div>
+
+        <div class="inputs">
+            <input id="d2" maxlength="1">
+        </div>
+
+        <div class="inputs">
+            <input id="d3" maxlength="1">
+        </div>
     `;
 }
 
 function loadQuestion(){
+
     const q = questions[current];
+
     let html = "";
 
     if(q.type === "round"){
+
         html += `
             <div style="grid-column:span 5;font-size:22px;line-height:1.5;">
                 Round ${q.roundNum}<br>
                 to the ${q.place}
             </div>
         `;
+
         html += `<div class="line"></div>`;
+
         html += makeInputs();
+
     } else {
+
         q.nums.forEach((num, index) => {
+
             const digits = String(num).padStart(4, " ").split("");
+
             const symbol = index === q.nums.length - 1 ? q.type : "";
 
             html += `<div>${symbol}</div>`;
-            html += `<div>${digits.trim()}</div>`;
-            html += `<div>${digits.trim()}</div>`;
-            html += `<div>${digits.trim()}</div>`;
-            html += `<div>${digits.trim()}</div>`;
+
+            digits.forEach(d => {
+                html += `<div>${d}</div>`;
+            });
+
         });
 
         html += `<div class="line"></div>`;
+
         html += makeInputs();
     }
 
     document.getElementById("grid").innerHTML = html;
-    document.getElementById("questionNum").textContent = `Question ${current + 1} / ${questions.length}`;
 
-    // Safely reset components
-    const resultBox = document.getElementById("resultBox");
-    if(resultBox) {
-        resultBox.style.display = "none";
-        resultBox.textContent = "";
-    }
-    
-    const retryBtn = document.getElementById("retryBtn");
-    if(retryBtn) {
-        retryBtn.style.display = "none";
-    }
-    
-    const nextBtn = document.getElementById("nextBtn");
-    if(nextBtn) {
-        nextBtn.textContent = "Submit";
-    }
-    
+    document.getElementById("questionNum").textContent =
+        `Question ${current + 1} / ${questions.length}`;
+
+    document.getElementById("resultBox").style.display = "none";
+
+    document.getElementById("retryBtn").style.display = "none";
+
+    document.getElementById("nextBtn").textContent = "Submit";
+
     submitted = false;
 
-    // Auto-tabbing mechanism
     const inputs = document.querySelectorAll(".inputs input");
+
     inputs.forEach((input, index) => {
+
         input.addEventListener("input", () => {
+
             input.value = input.value.replace(/[^0-9]/g, "");
+
             if(input.value && index < inputs.length - 1){
                 inputs[index + 1].focus();
             }
+
         });
+
     });
 
-    const focusInput = document.getElementById("d3");
-    if(focusInput) focusInput.focus();
+    document.getElementById("d3").focus();
 }
 
 function getAnswer(){
-    const d0 = document.getElementById("d0") ? document.getElementById("d0").value : "";
-    const d1 = document.getElementById("d1") ? document.getElementById("d1").value : "";
-    const d2 = document.getElementById("d2") ? document.getElementById("d2").value : "";
-    const d3 = document.getElementById("d3") ? document.getElementById("d3").value : "";
-    
+
+    const d0 = document.getElementById("d0").value || "";
+    const d1 = document.getElementById("d1").value || "";
+    const d2 = document.getElementById("d2").value || "";
+    const d3 = document.getElementById("d3").value || "";
+
     const answer = d0 + d1 + d2 + d3;
-    return answer.trim() === "" ? "" : String(parseInt(answer, 10));
+
+    return answer.trim() === ""
+        ? ""
+        : String(parseInt(answer,10));
 }
 
 function submitOrNext(){
+
     const resultBox = document.getElementById("resultBox");
+
     const retryBtn = document.getElementById("retryBtn");
+
     const nextBtn = document.getElementById("nextBtn");
 
     if(!submitted){
+
         const answer = getAnswer();
+
         userAnswers[current] = answer;
 
         const correct = questions[current].answer;
 
-        if(resultBox) {
-            resultBox.textContent = answer === correct ? "✅" : "❌";
-            resultBox.style.display = "block";
-        }
+        resultBox.textContent =
+            answer === correct ? "✅" : "❌";
 
-        if(retryBtn) retryBtn.style.display = "block";
-        if(nextBtn) nextBtn.textContent = current === questions.length - 1 ? "Finish" : "Next";
+        resultBox.style.display = "block";
+
+        retryBtn.style.display = "block";
+
+        nextBtn.textContent =
+            current === questions.length - 1
+            ? "Finish"
+            : "Next";
 
         submitted = true;
+
     } else {
+
         if(current === questions.length - 1){
+
             finishQuiz();
+
         } else {
+
             current++;
+
             loadQuestion();
         }
     }
 }
 
 function retryQuestion(){
+
     userAnswers[current] = "";
+
     submitted = false;
+
     loadQuestion();
 }
 
 function finishQuiz(){
+
     let score = 0;
-    let details = [];
+
     let resultHtml = `
-        <div style="text-align:center; max-height: 420px; overflow-y: auto; padding-right: 5px;">
+        <div style="max-height:420px;overflow-y:auto;">
             <h1>Quiz Finished!</h1>
-            <h2>Score: <span id="finalScore">Calculating...</span> / ${questions.length}</h2>
-            <div style="text-align:left; display:inline-block; margin-bottom:20px; font-size:16px; width:100%;">
     `;
 
     questions.forEach((q, i) => {
+
         const user = userAnswers[i] || "";
-        const isCorrect = user === q.answer;
-        
-        if(isCorrect) {
-            score++;
+
+        const correct = q.answer;
+
+        const isCorrect = user === correct;
+
+        if(isCorrect) score++;
+
+        if(q.type === "round"){
+
+            resultHtml += `
+                <p>
+                    ${isCorrect ? "✅" : "❌"}
+                    Q${i+1}: Round ${q.roundNum} to ${q.place}
+                    <br>
+                    Your Answer:
+                    <span style="color:${isCorrect?'green':'red'}">
+                        ${user || "blank"}
+                    </span>
+
+                    ${
+                        !isCorrect
+                        ? ` | Correct: <span style="color:green">${correct}</span>`
+                        : ""
+                    }
+                </p>
+            `;
+
         } else {
-            let qText = q.type === 'round' ? `Round ${q.roundNum} to ${q.place}` : q.nums.join(q.type);
-            details.push(`Q${i+1} (${qText}): User=${user||"blank"}, Correct=${q.answer}`);
+
+            resultHtml += `
+                <p>
+                    ${isCorrect ? "✅" : "❌"}
+                    Q${i+1}: ${q.nums.join(` ${q.type} `)}
+                    <br>
+
+                    Your Answer:
+                    <span style="color:${isCorrect?'green':'red'}">
+                        ${user || "blank"}
+                    </span>
+
+                    ${
+                        !isCorrect
+                        ? ` | Correct: <span style="color:green">${correct}</span>`
+                        : ""
+                    }
+                </p>
+            `;
         }
 
-        if(q.type === 'round') {
-            resultHtml += `<p style="margin:8px 0; border-bottom:1px dashed #ccc; padding-bottom:5px;">
-                ${isCorrect ? "✅" : "❌"} <b>Q${i+1}</b>: Round ${q.roundNum} to ${q.place}. <br>
-                Your Answer: <span style="color:${isCorrect?'green':'red'}">${user||"blank"}</span>
-                ${!isCorrect ? ` | Correct: <span style="color:green">${q.answer}</span>` : ""}
-            </p>`;
-        } else {
-            resultHtml += `<p style="margin:8px 0; border-bottom:1px dashed #ccc; padding-bottom:5px;">
-                ${isCorrect ? "✅" : "❌"} <b>Q${i+1}</b>: ${q.nums.join(` ${q.type} `)} <br>
-                Your Answer: <span style="color:${isCorrect?'green':'red'}">${user||"blank"}</span>
-                ${!isCorrect ? ` | Correct: <span style="color:green">${q.answer}</span>` : ""}
-            </p>`;
-        }
     });
 
     resultHtml += `
-            </div>
-            <br>
-            <button onclick="location.reload()" style="background:#2196F3; width:200px;">Restart Quiz</button>
+        <h2>Score: ${score} / ${questions.length}</h2>
+
+        <button onclick="location.reload()">
+            Restart Quiz
+        </button>
+
         </div>
     `;
 
     document.getElementById("container").innerHTML = resultHtml;
-    
-    const scoreDisplay = document.getElementById("finalScore");
-    if(scoreDisplay) scoreDisplay.textContent = score;
-
-    fetch(sheetURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-            Name: studentName,
-            Section: sectionName,
-            Score: `${score} / ${questions.length}`,
-            Details: details.length > 0 ? details.join("; ") : "Perfect Score!",
-            Time: new Date().toLocaleString()
-        })
-    }).catch(err => console.error("Save Error:", err));
 }
+
 </script>
 
 </body>
